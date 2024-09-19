@@ -47,47 +47,100 @@ This program is designed to help understand the following Assembly concepts:
 - `0`: Read the input
 - `60`: Exit
 
+## Code
 
-## How to Assemble and Run
-
-### 1. Assemble the Code
-
-```bash
-nasm -f elf64 -o game.o game.asm
 ```
+section .data
+  wlc db "Chose a number (0-9):", 0xA
+  wlc_len equ $ - wlc
+  lose db "Lose!", 0xA
+  lose_len equ $ - lose
+  win db "Win!", 0xA
+  win_len equ $ - win
 
-- `nasm`: The assembler (a tool that translates assembly code into an object file).
-- `-f elf64`: Specifies the output format. `elf64` indicates that the object file should be created in the 64-bit ELF (Executable and Linkable Format) format, which is common on Linux systems.
-- `-o game.o`: Specifies the name of the resulting object file. In this case, the object file will be named `game.o`.
-- `game.asm`: The input file containing the assembly code to be assembled.
+section .bss
+  true_number resd 1;
+  my_number resd 1;
+  random_number resd 1;
 
-#### 2. Link the Object File
+  section .text
+global _start
 
-```bash
-ld -o game game.o
+_start:
+
+  mov byte [true_number], 1
+  mov byte [my_number], 1
+
+  ; Welcome
+  mov rax, 1
+  mov rdi, 1  
+  mov rsi, wlc  
+  mov rdx, wlc_len
+  syscall
+
+  ; Input   
+  mov rax, 0
+  mov rdi, 0
+  mov rsi, my_number
+  mov rdx, 1
+  syscall
+
+  ; Generate
+  call random
+  
+  ; Compare
+  mov eax, dword [true_number]
+  cmp eax, dword [my_number]
+  je correct
+  jmp fail
+
+  
+
+random:
+  xor rdx, rdx
+  mov rdi, true_number
+  mov rax, 318
+  mov rdx, 0
+  mov rsi, 1
+  syscall      
+
+  movzx rax, byte [true_number]
+  xor rdx, rdx
+  mov rcx, 10
+  div rcx
+  add edx, 1
+  add edx, '0'
+
+  mov [true_number], edx
+  ret
+
+correct:
+  xor rax, rax
+  xor rdi, rdi
+  mov rax, 1
+  mov rdi, 1
+  mov rsi, win
+  mov rdx, win_len
+  syscall
+
+  call exit
+
+fail:
+  xor rax, rax
+  xor rdi, rdi
+  mov rax, 1
+  mov rdi, 1
+  mov rsi, lose
+  mov rdx, lose_len
+  syscall
+
+  call exit
+
+exit:
+  mov rax, 60
+  xor rdi, rdi
+  syscall
+
 ```
-
-- `ld`: The linker, a tool that combines the object file with any other necessary libraries or object files to produce an executable file.
-- `-o game`: Specifies the name of the resulting executable file. Here, the executable will be named `game`.
-- `game.o`: The object file to be linked.
-
-#### 3. Run the Program
-
-```bash
-./game
-```
-
-- `./game`: Executes the resulting executable file. The `./` prefix indicates that the file `game` is located in the current directory.
-
-
-## Notes
-
-- This program is a very simple educational example. The random number generation is basic and may not be secure for more serious uses.
-- The program assumes that user input is always valid (a single numeric character).
-
-## License
-
-This project is provided without warranties and for educational purposes. It is free to be used and modified for learning purposes.
-
 ---
 
