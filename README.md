@@ -43,11 +43,6 @@ ld -o game game.o
 - `./game`: Executes the resulting executable file. The `./` prefix indicates that the file `game` is located in the current directory.
 
 
-## Notes
-
-- This program is a very simple educational example. The random number generation is basic and may not be secure for more serious uses.
-- The program assumes that user input is always valid (a single numeric character).
-
 ## License
 
 This project is provided without warranties and for educational purposes. It is free to be used and modified for learning purposes.
