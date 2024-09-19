@@ -9,6 +9,7 @@ In this repository, I will showcase some basic projects done in Assembly x64/x86
 ## Projects list
 
 1. Random number generator: [ReadMe](./Number-guessr/Tutorial.md)
+2. Coming soon..
 
 ## How to Assemble and Run
 
